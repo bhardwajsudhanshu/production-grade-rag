@@ -1,6 +1,6 @@
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassThrough, RunnableParallel
+from langchain_core.runnables import RunnablePassthrough, RunnableParallel
 from langchain_core.output_parsers import StrOutputParser
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain.chat_models import init_chat_model
@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 import tempfile
 
 load_dotenv()  # Load environment variables from .env file
-embeddings_model = GoogleGenerativeAIEmbeddings(model="text-embedding-004")
+embeddings_model = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
 
 
 # Sample knowledge base
@@ -76,10 +76,11 @@ def create_kb():
 def demo_basic_rag():
 
     vector_store = create_kb()
-    retriever = vector_store.as_retriever(search_type="similariity", search_kwargs={"k": 2}) # kwargs 2 we just want 2 documents to be retrieved
+    retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 2}) # kwargs 2 we just want 2 documents to be retrieved
     llm = init_chat_model(
-        model="gemini-3.7-flash", 
+        model="gemini-3.6-flash", 
         temperature=0.7,
+        model_provider="google_genai"
     )
 
     # RAG prompt template
@@ -101,4 +102,31 @@ and if you don't know the answer, just say "I don't know."""
     # format retrieved docs
     def format_docs(docs):
         return "\n\n".join([doc.page_content for doc in docs])
+
+    # RAG chain
+    rag_chain = (
+        {"context":retriever | format_docs, "question": RunnablePassthrough()}
+        | prompt
+        | llm
+        | StrOutputParser()
+    )
+
+    # test the rag chain
+    questions = [
+        "what is LangChain?",
+        "What is LangGraph?",
+        "who created LangChain?",
+
+    ]
+
+    print("Basic RAG Demo:\n")
+    for q in questions:
+        answer = rag_chain.invoke(q)
+        print(f"Q: {q}")
+        print(f"A: {answer}\n")
+
+
+if __name__ == "__main__":
+    demo_basic_rag()
+
 

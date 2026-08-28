@@ -73,3 +73,8 @@ def demo_trace_with_metadata(user_id: str, request_type: str):
 
     return result.content
 
+if __name__ == "__main__":
+    demo_basic_tracing()
+    demo_named_runs()
+    demo_trace_with_metadata(user_id="user_123", request_type="greeting")
+

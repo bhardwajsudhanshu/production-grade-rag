@@ -58,3 +58,18 @@ def demo_named_runs():
     print(f"Result: {result}")
     print("Run tagged with 'production', 'summarization'")
 
+@traceable(name="trace_with_metadata_demo", tags=["metadata", "filtering"])
+def demo_trace_with_metadata(user_id: str, request_type: str):
+    """Add metadata to traces for filtering."""
+
+    llm = init_chat_model(
+            model="gemini-3.6-flash", 
+            temperature=0,
+            model_provider="google_genai"
+    )
+
+    # Metadata is automatically captured
+    result = llm.invoke(f"Hello from user {user_id}")
+
+    return result.content
+

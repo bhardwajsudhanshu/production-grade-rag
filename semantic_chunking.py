@@ -51,3 +51,15 @@ print(f"Recursive chunks: {len(recursive_chunks)}")
 for i, chunk in enumerate(recursive_chunks):
     print(f"\\n--- Chunk {i+1} ({len(chunk)} chars) ---")
     print(chunk[:100] + "..." if len(chunk) > 100 else chunk)
+
+semantic_chunker = SemanticChunker(
+    embeddings,
+    breakpoint_threshold_type='percentile',
+    breakpoint_threshold_amount=90 #split at 90th percentile dissimilarity
+)
+semantic_chunks = semantic_chunker.split_text(document)
+
+print(f"Semantic Chunks: {len(semantic_chunks)}")
+for i, chunk in enumerate(semantic_chunks):
+    print(f"\n--- Chunk {i+1} ({len(chunk)} chars) ---")
+    print(chunk[:100] + "..." if len(chunk) > 100 else chunk)

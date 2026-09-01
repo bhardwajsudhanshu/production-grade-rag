@@ -19,7 +19,7 @@ if creds and not os.path.isabs(creds):
     base = os.path.dirname(os.path.abspath(__file__))
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(base, creds)
 
-PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "kaggle-submission2")
+PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT")
 LOCATION = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
 API_KEY = os.environ.get("GOOGLE_API_KEY")
 

@@ -170,6 +170,38 @@ def create_base_vectorstore():
         documents=INFO_BURIED,
         embedding=GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
     )
+
+def demo_multi_query_retriever():
+    """Multi query retriever generates multiple query perspectives."""
+
+    print("=" * 60)
+    print("MULTI-QUERY RETRIEVER")
+    print("Generates multiple perspectives on your question")
+    print("=" * 60)
+
+    vectorstore = create_base_vectorstore()
+    llm = ChatGoogleGenerativeAI(model='gemini-3.6-flash', temperature=0)
+
+    # create multi-quert retriever
+    retriever = MultiQueryRetriever.from_llm(
+        retriever=vectorstore.as_retriever(search_kwargs={"k": 2}),
+        llm=llm
+    )
+    query = "what framewroks exist for building llm applications?"
+
+    print(f"\nOriginal Query: {query}")
+    print("\nThe retriever will generate multiple query variations...")
+    print("(check info logs above for generated queries)\n")
+
+    # Retireve documents 
+    docs = retriever.invoke(query)
+
+    print(f"Retrieved {len(docs)} unique documents:")
+    for i, doc in enumerate(docs):
+        print(
+            f"\n{i+1}. [{doc.metadata.get('topic', 'N/A')}] {doc.page_content[:150]}..."
+        )
+        
 def demo_contextual_compression():
     """contextual compression extracts only releveant parts"""
 
@@ -213,5 +245,6 @@ def demo_contextual_compression():
         print(f"Cntent: {doc.page_content}\n")
 
 if __name__ == "__main__":
-    demo_contextual_compression()
+   #demo_contextual_compression()
+    demo_multi_query_retriever()
 

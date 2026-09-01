@@ -9,3 +9,15 @@ wheels/
 # Virtual environments
 .venv
 .env
+.env.example
+# Secrets and credentials (NEVER commit)
+secrets/
+*.json.key
+*credentials*.json
+*service-account*.json
+gcp-credentials.json
+vertex-key.json
+
+# Test scripts (untracked experimental files)
+test_vertex_langchain.py
+list_vertex_models.py
